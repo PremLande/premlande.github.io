@@ -5,33 +5,1263 @@
   <title>Prem Lande | Site Reliability Engineer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
-    h1, h2 { color: #222; }
-    a { color: #0366d6; text-decoration: none; }
+    :root {
+      --bg: #050816;
+      --bg-elevated: #0b1020;
+      --bg-elevated-soft: #101830;
+      --text: #f5f7ff;
+      --text-soft: #a9b3d6;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.2);
+      --accent-strong: #0ea5e9;
+      --border-subtle: rgba(148, 163, 184, 0.35);
+      --chip-bg: rgba(15, 23, 42, 0.8);
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --transition-fast: 0.18s ease-out;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Segoe UI", Roboto, sans-serif;
+    }
+
+    body.light {
+      --bg: #f5f7fb;
+      --bg-elevated: #ffffff;
+      --bg-elevated-soft: #f3f4ff;
+      --text: #020617;
+      --text-soft: #4b5563;
+      --accent: #2563eb;
+      --accent-soft: rgba(37, 99, 235, 0.1);
+      --accent-strong: #1d4ed8;
+      --border-subtle: rgba(148, 163, 184, 0.45);
+      --chip-bg: rgba(248, 250, 252, 0.9);
+      --shadow-soft: 0 22px 55px rgba(15, 23, 42, 0.18);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: var(--font-sans);
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 55%, #020617 100%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px 48px;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 1120px;
+      background: radial-gradient(circle at 10% -10%, rgba(56, 189, 248, 0.08) 0, transparent 50%),
+        radial-gradient(circle at 90% 110%, rgba(168, 85, 247, 0.12) 0, transparent 50%),
+        linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.99));
+      border-radius: 32px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      overflow: hidden;
+      backdrop-filter: blur(26px);
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.3fr);
+    }
+
+    body.light .shell {
+      background: radial-gradient(circle at 10% -10%, rgba(37, 99, 235, 0.07) 0, transparent 55%),
+        radial-gradient(circle at 90% 110%, rgba(236, 72, 153, 0.08) 0, transparent 55%),
+        linear-gradient(135deg, #f9fafb, #eef2ff);
+      border-color: rgba(148, 163, 184, 0.4);
+    }
+
+    .sidebar {
+      padding: 26px 26px 26px 26px;
+      border-right: 1px solid var(--border-subtle);
+      background: linear-gradient(to bottom right, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.96));
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.light .sidebar {
+      background: linear-gradient(135deg, #eef2ff, #e0f2fe);
+    }
+
+    .sidebar::before {
+      content: "";
+      position: absolute;
+      inset: -12%;
+      background:
+        radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.22) 0, transparent 55%),
+        radial-gradient(circle at 120% 0, rgba(129, 140, 248, 0.22) 0, transparent 55%);
+      opacity: 0.9;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    body.light .sidebar::before {
+      opacity: 0.45;
+      mix-blend-mode: normal;
+    }
+
+    .sidebar-inner {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .identity {
+      max-width: 100%;
+    }
+
+    .name {
+      font-size: clamp(1.7rem, 2.2vw, 2.1rem);
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .name span.badge {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    body.light .name span.badge {
+      background: rgba(248, 250, 252, 0.9);
+    }
+
+    .role {
+      font-size: 0.95rem;
+      color: var(--text-soft);
+      margin-top: 4px;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      margin-top: 6px;
+    }
+
+    .mode-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.75);
+      color: var(--text-soft);
+      font-size: 0.75rem;
+      cursor: pointer;
+      white-space: nowrap;
+      backdrop-filter: blur(12px);
+      transition: background var(--transition-fast), border-color var(--transition-fast),
+        transform 0.12s ease-out, box-shadow var(--transition-fast), color var(--transition-fast);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.7);
+    }
+
+    .mode-toggle:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.85);
+    }
+
+    body.light .mode-toggle {
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.16);
+    }
+
+    .mode-toggle-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #facc15 0, #f97316 40%, transparent 60%);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    body.light .mode-toggle-icon {
+      background: radial-gradient(circle at 30% 30%, #0f172a 0, #0f172a 46%, transparent 60%);
+    }
+
+    body.light .mode-toggle-icon::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at 10% 10%, rgba(248, 250, 252, 0.95) 0, transparent 55%);
+      border-radius: inherit;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+      margin-top: 16px;
+    }
+
+    .contact-card {
+      padding: 10px 11px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      color: var(--text-soft);
+      font-size: 0.74rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      backdrop-filter: blur(14px);
+      transition: border-color var(--transition-fast), background var(--transition-fast),
+        transform 0.12s ease-out, box-shadow var(--transition-fast);
+    }
+
+    .contact-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px rgba(15, 23, 42, 0.9);
+    }
+
+    body.light .contact-card {
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    .contact-label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.62rem;
+      color: var(--text-soft);
+    }
+
+    .contact-value a,
+    .contact-value span {
+      color: var(--text);
+      font-weight: 500;
+      text-decoration: none;
+      word-break: break-word;
+    }
+
+    .contact-value a:hover {
+      color: var(--accent);
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .tag {
+      font-size: 0.7rem;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      border: 1px solid rgba(56, 189, 248, 0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent-strong);
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.3);
+    }
+
+    .objective-card {
+      border-radius: 18px;
+      padding: 14px 14px 14px 14px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.96));
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.95);
+      margin-bottom: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.light .objective-card {
+      background: linear-gradient(135deg, #ffffff, #eef2ff);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+    }
+
+    .objective-card::before {
+      content: "";
+      position: absolute;
+      inset: -15%;
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.28) 0, transparent 55%);
+      opacity: 0.7;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    body.light .objective-card::before {
+      opacity: 0.35;
+      mix-blend-mode: normal;
+    }
+
+    .section-heading {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .section-heading span.line {
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(to right, rgba(148, 163, 184, 0.8), transparent);
+    }
+
+    .objective-text {
+      font-size: 0.82rem;
+      color: var(--text-soft);
+    }
+
+    .metrics-list {
+      margin: 0;
+      margin-top: 12px;
+      padding-left: 18px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    .metrics-list li {
+      margin-bottom: 4px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      font-size: 0.7rem;
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.65);
+      color: var(--text-soft);
+    }
+
+    body.light .pill {
+      background: rgba(248, 250, 252, 0.95);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px dashed rgba(148, 163, 184, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.72rem;
+      color: var(--text-soft);
+    }
+
+    .availability {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(22, 163, 74, 0.14);
+      border: 1px solid rgba(22, 163, 74, 0.5);
+      color: #bbf7d0;
+      font-weight: 500;
+    }
+
+    body.light .availability {
+      background: rgba(22, 163, 74, 0.08);
+      color: #166534;
+    }
+
+    .availability-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.45);
+    }
+
+    .main {
+      padding: 26px 26px 26px 24px;
+      background: rgba(2, 6, 23, 0.9);
+      position: relative;
+      overflow-y: auto;
+      max-height: 90vh;
+    }
+
+    body.light .main {
+      background: rgba(248, 250, 252, 0.85);
+    }
+
+    .main::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .main::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .main::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.6);
+      border-radius: 999px;
+    }
+
+    .nav-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .nav-chip {
+      font-size: 0.72rem;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: var(--chip-bg);
+      color: var(--text-soft);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: border-color var(--transition-fast), color var(--transition-fast),
+        background var(--transition-fast), transform 0.12s ease-out, box-shadow var(--transition-fast);
+    }
+
+    .nav-chip span.dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.9);
+    }
+
+    .nav-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.9);
+    }
+
+    .nav-chip.active {
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      border-color: var(--accent-strong);
+    }
+
+    .cv-link {
+      margin-left: auto;
+      font-size: 0.74rem;
+      color: var(--accent-soft);
+    }
+
+    .cv-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px dashed rgba(56, 189, 248, 0.6);
+    }
+
+    .cv-link a:hover {
+      color: var(--accent-strong);
+    }
+
+    h2.section-title {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--text-soft);
+      margin: 0 0 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h2.section-title span.rule {
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(to right, rgba(148, 163, 184, 0.7), transparent);
+    }
+
+    .summary {
+      font-size: 0.86rem;
+      color: var(--text-soft);
+      margin-bottom: 18px;
+    }
+
+    .summary strong {
+      color: var(--text);
+    }
+
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .highlight-card {
+      border-radius: 15px;
+      padding: 10px 11px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    body.light .highlight-card {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.12);
+    }
+
+    .highlight-label {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(148, 163, 184, 0.9);
+    }
+
+    .highlight-metric {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .highlight-text {
+      font-size: 0.78rem;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1fr);
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .timeline-time {
+      font-size: 0.72rem;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .timeline-card {
+      position: relative;
+      border-radius: 16px;
+      padding: 11px 12px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      overflow: hidden;
+    }
+
+    body.light .timeline-card {
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 16px 34px rgba(15, 23, 42, 0.15);
+    }
+
+    .timeline-card::before {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.18) 0, transparent 55%);
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .timeline-role {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .timeline-company {
+      font-size: 0.76rem;
+      color: var(--text-soft);
+      margin-bottom: 6px;
+    }
+
+    .timeline-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .timeline-tag {
+      font-size: 0.7rem;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      color: var(--text-soft);
+    }
+
+    body.light .timeline-tag {
+      background: rgba(248, 250, 252, 0.95);
+    }
+
+    .timeline-list {
+      margin: 0;
+      padding-left: 18px;
+      font-size: 0.8rem;
+    }
+
+    .timeline-list li {
+      margin-bottom: 3px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .card {
+      border-radius: 16px;
+      padding: 11px 12px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    body.light .card {
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 16px 34px rgba(15, 23, 42, 0.16);
+    }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+    }
+
+    .list-inline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .list-inline li {
+      font-size: 0.8rem;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+    }
+
+    body.light .list-inline li {
+      background: rgba(248, 250, 252, 0.95);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .project-card {
+      border-radius: 15px;
+      padding: 10px 11px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    body.light .project-card {
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.1);
+    }
+
+    .project-title {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .project-meta {
+      font-size: 0.72rem;
+      color: var(--text-soft);
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      font-size: 0.7rem;
+      margin-top: 4px;
+    }
+
+    .project-tag {
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    body.light .project-tag {
+      background: rgba(248, 250, 252, 0.95);
+    }
+
+    .note {
+      font-size: 0.74rem;
+      color: var(--text-soft);
+      opacity: 0.85;
+    }
+
+    a {
+      color: var(--accent);
+    }
+
+    a:hover {
+      color: var(--accent-strong);
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .sidebar {
+        border-right: none;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+
+      .main {
+        max-height: none;
+      }
+
+      .highlights-grid,
+      .projects-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .timeline-item {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .two-col {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 14px 10px 24px;
+      }
+
+      .shell {
+        border-radius: 20px;
+      }
+
+      .sidebar {
+        padding: 18px 16px 16px;
+      }
+
+      .main {
+        padding: 16px 16px 16px;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .contact-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .highlights-grid,
+      .projects-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-inner">
+        <header>
+          <div class="identity">
+            <div class="name">
+              Prem Lande
+              <span class="badge">
+                <span class="badge-dot"></span>
+                SRE · AWS DevOps
+              </span>
+            </div>
+            <div class="role">Site Reliability Engineer | Cloud · Automation · Reliability</div>
+            <div class="location">
+              Pune · 411057 · India
+            </div>
+          </div>
+          <button class="mode-toggle" id="modeToggle" type="button">
+            <span class="mode-toggle-icon" aria-hidden="true"></span>
+            <span>Toggle theme</span>
+          </button>
+        </header>
 
-<h1>Prem Lande</h1>
-<p>Site Reliability Engineer | AWS | DevOps</p>
+        <div class="contact-grid">
+          <div class="contact-card">
+            <div class="contact-label">Email</div>
+            <div class="contact-value">
+              <a href="mailto:premlande2001@gmail.com">premlande2001@gmail.com</a>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-label">Phone</div>
+            <div class="contact-value">
+              <span>+91 93099 79538</span>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-label">LinkedIn</div>
+            <div class="contact-value">
+              <a href="https://www.linkedin.com/in/plande/" target="_blank" rel="noreferrer">linkedin.com/in/plande</a>
+            </div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-label">GitHub</div>
+            <div class="contact-value">
+              <a href="https://github.com/premlande" target="_blank" rel="noreferrer">github.com/premlande</a>
+            </div>
+          </div>
+        </div>
 
-<p>
-  <a href="mailto:premlande2001@gmail.com">Email</a> |
-  <a href="https://www.linkedin.com/in/plande/" target="_blank">LinkedIn</a> |
-  <a href="https://github.com/premlande" target="_blank">GitHub</a>
-</p>
+        <div class="tag-row">
+          <span class="tag">
+            <span class="tag-dot"></span>
+            3+ years · SRE &amp; AWS DevOps
+          </span>
+          <span class="tag">
+            <span class="tag-dot"></span>
+            Cloud Infrastructure · CI/CD · Automation
+          </span>
+        </div>
 
-<h2>Profile</h2>
-<p>Result-oriented SRE with experience in AWS, CI/CD, automation, and reliability engineering.</p>
+        <div class="objective-card" id="objective">
+          <div class="section-heading">
+            Job Objective
+            <span class="line"></span>
+          </div>
+          <div class="objective-text">
+            Result-oriented professional with over 3 years of experience across SRE and AWS DevOps, specializing in cloud
+            infrastructure management, automation, and reliability engineering for production systems. Seeking roles where I can
+            own end-to-end reliability, observability, and CI/CD for business-critical platforms.
+          </div>
+          <ul class="metrics-list">
+            <li>CI/CD automation driving up to <strong>60% faster deployments</strong> and improved release efficiency.</li>
+            <li>Improved cloud cost efficiency by <strong>~20% via EC2 right-sizing</strong> and usage optimization.</li>
+            <li>Reduced MTTR by <strong>15–30 minutes</strong> through SLI/SLO-driven incident management.</li>
+          </ul>
+          <div class="pill-row">
+            <span class="pill">AWS · GCP</span>
+            <span class="pill">SRE · Incident Management</span>
+            <span class="pill">CI/CD · Terraform · Ansible</span>
+          </div>
+        </div>
 
-<h2>Experience</h2>
-<ul>
-  <li><b>Integrichain</b> – Site Reliability Engineer (Dec 2024 – Present)</li>
-  <li><b>TCS</b> – Assistant System Engineer (Sep 2022 – Sep 2024)</li>
-</ul>
+        <div class="sidebar-footer">
+          <div>Open to SRE / DevOps roles</div>
+          <div class="availability">
+            <span class="availability-dot"></span>
+            Immediately available
+          </div>
+        </div>
+      </div>
+    </aside>
 
-<h2>Skills</h2>
-<p>AWS, Terraform, Docker, Kubernetes, CI/CD, Python, Datadog</p>
+    <main class="main">
+      <div class="nav-chips">
+        <button class="nav-chip active" data-target="summary">
+          <span class="dot"></span>
+          Profile
+        </button>
+        <button class="nav-chip" data-target="experience">
+          <span class="dot"></span>
+          Experience
+        </button>
+        <button class="nav-chip" data-target="skills">
+          <span class="dot"></span>
+          Skills
+        </button>
+        <button class="nav-chip" data-target="projects">
+          <span class="dot"></span>
+          Projects
+        </button>
+        <button class="nav-chip" data-target="education">
+          <span class="dot"></span>
+          Education
+        </button>
+        <div class="cv-link">
+          <a href="#objective">Jump to objective</a>
+        </div>
+      </div>
 
+      <section id="summary">
+        <h2 class="section-title">
+          Profile Summary
+          <span class="rule"></span>
+        </h2>
+        <p class="summary">
+          <strong>Serving as an SRE at Integrichain</strong>, designing, maintaining, and optimizing AWS-based cloud solutions
+          supporting business-critical analytics workloads. Hands-on expertise in
+          <strong>CI/CD engineering, system performance optimization, and automation</strong> to enable faster releases, stable
+          operations, and scalable cloud environments.
+        </p>
+        <p class="summary">
+          Delivered measurable impact through <strong>CI/CD automation (60% faster deployments)</strong>, structured SLI/SLO
+          tracking, and cost optimization, while owning production reliability and incident response aligned with
+          <strong>SOC2/HIPAA</strong> requirements. Combines execution depth in AWS DevOps with SRE best practices spanning
+          <strong>reliability, cost, security, and observability.</strong>
+        </p>
+
+        <div class="highlights-grid">
+          <div class="highlight-card">
+            <div class="highlight-label">Reliability &amp; Incidents</div>
+            <div class="highlight-metric">15–30 min MTTR reduction</div>
+            <div class="highlight-text">
+              Drove SLI/SLO adoption and incident workflows to reduce MTTR and minimize repeat incidents by ~30% for production
+              systems.
+            </div>
+          </div>
+          <div class="highlight-card">
+            <div class="highlight-label">Cost &amp; Performance</div>
+            <div class="highlight-metric">~20% cloud cost savings</div>
+            <div class="highlight-text">
+              Achieved cost optimization via EC2 right-sizing and performance tuning across analytics environments.
+            </div>
+          </div>
+          <div class="highlight-card">
+            <div class="highlight-label">Delivery &amp; Automation</div>
+            <div class="highlight-metric">60% faster deployments</div>
+            <div class="highlight-text">
+              Engineered CI/CD pipelines across 20+ products using AWS CodePipeline, CodeBuild, CodeDeploy, Terraform, and
+              Rundeck.
+            </div>
+          </div>
+          <div class="highlight-card">
+            <div class="highlight-label">Operational Excellence</div>
+            <div class="highlight-metric">30–40% manual effort cut</div>
+            <div class="highlight-text">
+              Automated recurring tasks across 130+ hosts using Ansible and Python, strengthening reliability and on-call
+              efficiency.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="experience">
+        <h2 class="section-title">
+          Work Experience
+          <span class="rule"></span>
+        </h2>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-time">Dec 2024 – Present</div>
+            <article class="timeline-card">
+              <div class="timeline-role">Site Reliability Engineer</div>
+              <div class="timeline-company">Integrichain Pvt. Ltd. · Pune, India</div>
+              <div class="timeline-tags">
+                <span class="timeline-tag">AWS · Analytics workloads</span>
+                <span class="timeline-tag">SRE · Incident Management</span>
+                <span class="timeline-tag">CI/CD · Terraform · Rundeck</span>
+              </div>
+              <ul class="timeline-list">
+                <li>Architecting, provisioning, and sustaining highly available AWS infrastructure across lower and higher
+                  environments supporting analytics workloads.</li>
+                <li>Engineering CI/CD pipelines for multiple products using CodeBuild, CodeDeploy, Terraform, and Rundeck
+                  (Python), integrating Pytest into CodePipeline with proactive deployment notifications.</li>
+                <li>Tracking SLIs and SLOs for production systems and managing L1/L2 on-call responsibilities to maintain
+                  reliability and performance benchmarks.</li>
+                <li>Applying least-privilege IAM policies across resources to align with SOC2 and HIPAA compliance requirements and
+                  strengthen security posture.</li>
+                <li>Automating DML execution across PostgreSQL and Snowflake via Rundeck Python jobs and executing database refresh
+                  operations across multiple PostgreSQL environments.</li>
+                <li>Configuring and routing Microsoft Teams alerts for high resource utilization and key system events to developers
+                  and stakeholders.</li>
+                <li>Provisioning and onboarding multiple customers using AWS WAF configurations and automating repetitive operational
+                  tasks across 130+ hosts via Ansible playbooks.</li>
+                <li>Implementing Lambda-based Gatekeeper workflows for stakeholder approval/denial and scripting Python utilities to
+                  automate maintenance window creation ahead of deployments.</li>
+                <li>Partnering with developers to diagnose and resolve ECS deployment issues, improving release stability and
+                  platform uptime.</li>
+              </ul>
+            </article>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-time">Sep 2022 – Sep 2024</div>
+            <article class="timeline-card">
+              <div class="timeline-role">Assistant System Engineer</div>
+              <div class="timeline-company">Tata Consultancy Services Ltd. · Pune, India</div>
+              <div class="timeline-tags">
+                <span class="timeline-tag">AWS ECS · Microservices</span>
+                <span class="timeline-tag">Jenkins · CI/CD</span>
+                <span class="timeline-tag">CloudWatch · Monitoring</span>
+              </div>
+              <ul class="timeline-list">
+                <li>Engineered and rolled out Spring Boot microservices on AWS ECS using Docker, supporting 25+ services and
+                  improving deployment scalability by ~15%.</li>
+                <li>Assisted in transitioning applications from monoliths to microservices architecture, enabling ~30% faster
+                  releases.</li>
+                <li>Implemented CloudWatch dashboards and proactive alerts for critical services, reducing incident detection time by
+                  15–20 minutes.</li>
+                <li>Configured IAM roles, security groups, and VPC policies to strengthen infrastructure security and access
+                  controls.</li>
+                <li>Supported CI/CD automation initiatives using Jenkins and Git-based workflows, contributing to continuous
+                  delivery.</li>
+                <li>Participated in Agile ceremonies, code reviews, and release management to ensure predictable, high-quality
+                  deliveries.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="skills">
+        <h2 class="section-title">
+          Skills &amp; Expertise
+          <span class="rule"></span>
+        </h2>
+
+        <div class="two-col">
+          <div class="card">
+            <h3>Core Competencies</h3>
+            <ul class="list-inline">
+              <li>Cloud Infrastructure Management</li>
+              <li>CI/CD Engineering</li>
+              <li>System Performance Optimization</li>
+              <li>Security &amp; Compliance (SOC2, HIPAA)</li>
+              <li>Incident Management &amp; Response</li>
+              <li>Cost Optimization</li>
+              <li>Automation &amp; Scripting</li>
+              <li>Monitoring &amp; Alerting</li>
+              <li>Agile Delivery</li>
+              <li>Microservices Architecture</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Cloud &amp; Platforms</h3>
+            <ul class="list-inline">
+              <li>AWS (IAM, EC2, ECS, EKS, Fargate, Lambda)</li>
+              <li>S3, CloudFront, RDS, Aurora, VPC, SNS, API Gateway, WAF, Batch</li>
+              <li>GCP (foundational exposure)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <h3>DevOps &amp; Tooling</h3>
+            <ul class="list-inline">
+              <li>CI/CD: CodeBuild, CodeDeploy, CodePipeline</li>
+              <li>Jenkins, GitHub Actions</li>
+              <li>Infrastructure as Code: Terraform, Ansible</li>
+              <li>Containers: Docker, Kubernetes, Helm, kind</li>
+              <li>Version Control: Git, GitHub</li>
+              <li>Testing: Pytest</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Monitoring &amp; Languages</h3>
+            <ul class="list-inline">
+              <li>CloudWatch, Datadog</li>
+              <li>Prometheus, Grafana, PagerDuty</li>
+              <li>Python, Bash, PowerShell</li>
+              <li>Databases: PostgreSQL, Snowflake</li>
+              <li>Directory Services: Active Directory</li>
+              <li>Collaboration: JIRA, Confluence</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects">
+        <h2 class="section-title">
+          Personal Projects
+          <span class="rule"></span>
+        </h2>
+
+        <div class="projects-grid">
+          <article class="project-card">
+            <div class="project-title">Automated YouTube Channel</div>
+            <div class="project-meta">AI-integrated content automation</div>
+            <div>
+              Built and automated an AI-integrated YouTube channel that curates and publishes
+              <strong>SRE and DevOps trends</strong>, showcasing automation and content workflows.
+            </div>
+            <div class="project-tags">
+              <span class="project-tag">Automation</span>
+              <span class="project-tag">AI</span>
+              <span class="project-tag">DevOps Content</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-title">Automated AWS EKS CI/CD</div>
+            <div class="project-meta">Terraform + Helm + GitHub Actions</div>
+            <div>
+              Designed a fully automated AWS EKS platform using Terraform (VPC, EKS, ECR) and GitHub Actions for repeatable
+              infrastructure provisioning and application CI/CD.
+            </div>
+            <div class="project-tags">
+              <span class="project-tag">AWS EKS</span>
+              <span class="project-tag">Terraform</span>
+              <span class="project-tag">Helm</span>
+              <span class="project-tag">GitHub Actions</span>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-title">Flask Time Service · kind + Prometheus</div>
+            <div class="project-meta">Kubernetes observability lab</div>
+            <div>
+              Deployed a containerized Flask service on Kubernetes (kind) with automated delivery via PowerShell, integrating
+              Prometheus and Grafana via Helm for metrics and dashboards.
+            </div>
+            <div class="project-tags">
+              <span class="project-tag">Flask</span>
+              <span class="project-tag">Kubernetes</span>
+              <span class="project-tag">Prometheus</span>
+              <span class="project-tag">Grafana</span>
+            </div>
+          </article>
+        </div>
+
+        <p class="note">
+          More implementation details and code samples are available on my GitHub profile.
+        </p>
+      </section>
+
+      <section id="education">
+        <h2 class="section-title">
+          Education
+          <span class="rule"></span>
+        </h2>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-time">Pursuing</div>
+            <article class="timeline-card">
+              <div class="timeline-role">PGDM (Information Technology)</div>
+              <div class="timeline-company">MIT</div>
+              <p>Postgraduate program in IT, building depth across business, systems, and technology management.</p>
+            </article>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-time">2022</div>
+            <article class="timeline-card">
+              <div class="timeline-role">B.E. · Computer Science</div>
+              <div class="timeline-company">G.H. Raisoni Institute of Engineering &amp; Technology (GHRIET)</div>
+              <p>Graduated with a strong foundation in computer science fundamentals, algorithms, and software engineering.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const body = document.body;
+      const toggle = document.getElementById("modeToggle");
+      const stored = window.localStorage.getItem("theme");
+
+      if (stored === "light") {
+        body.classList.add("light");
+      }
+
+      toggle?.addEventListener("click", () => {
+        const isLight = body.classList.toggle("light");
+        window.localStorage.setItem("theme", isLight ? "light" : "dark");
+      });
+
+      const chips = document.querySelectorAll(".nav-chip");
+      chips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          const targetId = chip.getAttribute("data-target");
+          const section = document.getElementById(targetId);
+          if (section) {
+            section.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+          chips.forEach((c) => c.classList.remove("active"));
+          chip.classList.add("active");
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
